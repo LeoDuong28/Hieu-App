@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import logo from "./assets/icon.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Validation from "./RegisterValidation";
+import axios from "axios";
 
 export default function Register() {
   const [values, setValues] = useState({
@@ -9,7 +10,7 @@ export default function Register() {
     username: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
@@ -22,6 +23,18 @@ export default function Register() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(Validation(values));
+    if (
+      errors.username === "" &&
+      errors.email === "" &&
+      errors.password === "'"
+    ) {
+      axios
+        .post("http://localhost:2807/register", values)
+        .then((res) => {
+          navigate("/");
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (

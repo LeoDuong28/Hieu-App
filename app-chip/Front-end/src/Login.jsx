@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import logo from "./assets/icon.png";
-import Validation from "./LoginValidation";
-import { Link } from "react-router-dom";
-import Row from "react-dom";
+import Login_Validation from "./LoginValidation";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [values, setValues] = useState({
@@ -10,6 +10,7 @@ export default function Login() {
     password: "",
   });
 
+  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
@@ -21,7 +22,19 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setErrors(Validation(values));
+    setErrors(Login_Validation(values));
+    if (errors.email === "" && errors.password === "'") {
+      axios
+        .post("http://localhost:2807/register", values)
+        .then((res) => {
+          if (res.data === "Success") {
+            navigate("/home");
+          } else {
+            alert("No account existed");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
@@ -38,7 +51,6 @@ export default function Login() {
           name="email"
         />
         {errors.email && <span className="text-danger"> {errors.email} </span>}
-
         <label htmlFor="password">Password</label>
         <input
           type="password"
@@ -50,7 +62,6 @@ export default function Login() {
         {errors.password && (
           <span className="text-danger"> {errors.password} </span>
         )}
-
         <button className="btn btn-success" type="submit">
           Log In
         </button>
