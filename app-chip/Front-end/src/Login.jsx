@@ -62,7 +62,7 @@ export default function Login() {
         {errors.password && (
           <span className="text-danger"> {errors.password} </span>
         )}
-        <button className="btn btn-success" type="submit">
+        <button className="btn btn-success" /*type="submit"*/ to="/home">
           Log In
         </button>
       </form>
